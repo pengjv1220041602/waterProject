@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbUserMapper">
+	<resultMap id="BaseResultMap" type="com.water.pojo.TbUser">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="user_idcard" property="userIdcard" jdbcType="VARCHAR" />
+		<result column="user_address" property="userAddress" jdbcType="VARCHAR" />
+		<result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+		<result column="flag" property="flag" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="create_user" property="createUser" jdbcType="VARCHAR" />
+		<result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="baseSqlMap">
+		id AS "id",
+		user_name AS "userName",
+		password AS "password",
+		user_idcard AS "userIdcard",
+		user_address AS "userAddress",
+		user_phone AS "userPhone",
+		user_admin AS "userAdmin",
+		login_name AS "loginName",
+		flag AS "flag",
+		create_time AS "createTime",
+		update_time AS "updateTime",
+		create_user AS "createUser",
+		update_user AS "updateUser"
+	</sql>
+	
+	<sql id="baseSqlJoin">
+	
+	</sql>
+	
+	<select id="getAllTbUsers" parameterType="com.water.pojo.TbUser" resultType="com.water.pojo.TbUser">
+		SELECT
+		<include refid="baseSqlMap"></include>
+		FROM tb_user a
+		<where>
+			a.flag = 1
+		</where>
+	</select>
+	
+	<select id="getTbUser" parameterType="com.water.pojo.TbUser" resultType="com.water.pojo.TbUser">
+		SELECT
+		<include refid="baseSqlMap"></include>
+		FROM tb_user a
+		<where>
+			a.flag = 1 
+			<if test="id!=null and id!=''">
+				AND a.id = #{id}
+			</if>
+			<if test="loginName != null and loginName != ''">
+				AND a.login_name = #{loginName}
+			</if>
+			<if test="password != null and password != ''">
+				AND a.password = #{password}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertTbUser" parameterType="com.water.pojo.TbUser" >
+	    INSERT INTO tb_user (id, user_name, password, 
+	      user_idcard, user_address, user_phone,user_admin,login_name,
+	      flag, create_time, update_time, 
+	      create_user, update_user)
+	    VALUES (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+	      #{userIdcard,jdbcType=VARCHAR}, #{userAddress,jdbcType=VARCHAR}, #{userPhone,jdbcType=VARCHAR},#{userAdmin,jdbcType=VARCHAR},#{loginName,jdbcType=VARCHAR}, 
+	      #{flag,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+	      #{createUser,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateTbUser" parameterType="com.water.pojo.TbUser" >
+		UPDATE tb_user
+	    <set>
+	      <if test="userName != null" >
+	        user_name = #{userName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="password != null" >
+	        password = #{password,jdbcType=VARCHAR},
+	      </if>
+	      <if test="userIdcard != null" >
+	        user_idcard = #{userIdcard,jdbcType=VARCHAR},
+	      </if>
+	      <if test="userAddress != null" >
+	        user_address = #{userAddress,jdbcType=VARCHAR},
+	      </if>
+	      <if test="userPhone != null" >
+	        user_phone = #{userPhone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="loginName != null" >
+	        login_name = #{loginName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="userAdmin != null" >
+	        user_admin = #{userAdmin,jdbcType=VARCHAR},
+	      </if>
+	      <if test="flag != null" >
+	        flag = #{flag,jdbcType=VARCHAR},
+	      </if>
+	      <if test="createTime != null" >
+	        create_time = #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="updateTime != null" >
+	        update_time = #{updateTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="createUser != null" >
+	        create_user = #{createUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="updateUser != null" >
+	        update_user = #{updateUser,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

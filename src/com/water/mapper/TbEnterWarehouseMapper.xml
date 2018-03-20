@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbEnterWarehouseMapper">
+	<resultMap id="BaseResultMap" type="com.water.pojo.TbEnterWarehouse" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="pro_id" property="proId" jdbcType="VARCHAR" />
+    <result column="enter_warehouse_num" property="enterWarehouseNum" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="VARCHAR" />
+  </resultMap>
+	
+	<sql id="baseSqlMap">
+		a.id AS "id",
+		a.pro_id AS "proId",
+		a.enter_warehouse_num AS "enterWarehouseNum",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.create_user AS "createUser",
+		a.update_user AS "updateUser",
+		a.flag AS "flag",
+		
+		<!-- 物品 -->
+		b.id AS "tbProduct.id",
+  		b.pro_name AS "tbProduct.proName"
+	</sql>
+	<!-- 查询所有的入库信息 -->
+	<select id="getAllTbEnterWarehouse" parameterType="com.water.pojo.TbEnterWarehouse" resultType="com.water.pojo.TbEnterWarehouse">
+		SELECT
+			<include refid="baseSqlMap"></include>
+		FROM tb_enter_warehouse a
+		LEFT JOIN tb_product b ON a.pro_id = b.id
+		<where>
+			a.flag = 1 AND b.flag = 1
+		</where>
+	</select>
+	<!-- 得到一个入库信息 -->
+	<select id="getTbEnterWarehouse" parameterType="com.water.pojo.TbEnterWarehouse" resultType="com.water.pojo.TbEnterWarehouse">
+		SELECT
+			<include refid="baseSqlMap"></include>
+		FROM tb_enter_warehouse a
+		LEFT JOIN tb_product b ON a.pro_id = b.id
+		<where>
+			a.flag = 1 AND b.flag = 1
+			<if test="id != null and id != ''">
+				a.id = #{id}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 插入一个入库信息 -->
+	<insert id="insertEnterWarehouse" parameterType="com.water.pojo.TbEnterWarehouse">
+		INSERT INTO tb_enter_warehouse 
+		  (id, pro_id, enter_warehouse_num, 
+	      create_time, update_time, create_user, 
+	      update_user, flag)
+	    VALUES 
+	      (#{id,jdbcType=VARCHAR}, #{tbProduct.id,jdbcType=VARCHAR}, #{enterWarehouseNum,jdbcType=INTEGER}, 
+	      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+	      #{updateUser,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR})
+	</insert>
+	<!-- 更新一个入库信息 -->
+	<update id="updateEnterWarehouse" parameterType="com.water.pojo.TbEnterWarehouse">
+		UPDATE tb_enter_warehouse
+	    <set >
+	      <if test="tbProduct != null and tbProduct.id != null" >
+	        pro_id = #{tbProduct.id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="enterWarehouseNum != null" >
+	        enter_warehouse_num = #{enterWarehouseNum,jdbcType=INTEGER},
+	      </if>
+	      <if test="createTime != null" >
+	        create_time = #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="updateTime != null" >
+	        update_time = #{updateTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="createUser != null" >
+	        create_user = #{createUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="updateUser != null" >
+	        update_user = #{updateUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="flag != null" >
+	        flag = #{flag,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    WHERE id = #{id,jdbcType=VARCHAR}
+	
+	</update>
+</mapper>

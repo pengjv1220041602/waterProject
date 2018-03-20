@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbProductTbCouponsVOMapper">
+<!-- 得到对应的商品 -->
+	<select id="getProductAndCoupons" parameterType="com.water.pojo.TbProductTbCouponsVO" resultType="com.water.pojo.TbProductTbCouponsVO">
+		SELECT
+			a.id AS "tbProduct.id",
+			a.pro_name AS "tbProduct.proName",
+			c.id AS "tbCoupons.id",
+			"0" AS "noCoupons"
+		FROM
+			tb_product a
+		LEFT JOIN tb_coupons_product b ON a.id = b.product_id
+		LEFT JOIN tb_coupons c ON b.coupons_id = c.id
+		<where>
+			a.flag = 1 AND b.flag = 1 AND c.flag = 1
+			<if test="tbCoupons != null and tbCoupons.id != null and tbCoupons.id != ''">
+				AND c.id = #{tbCoupons.id}
+			</if>
+		</where>
+		UNION 
+		SELECT
+			a.id AS "tbProduct.id",
+			a.pro_name AS "tbProduct.proName",
+			c.id AS "tbCoupons.id",
+			"1" AS "noCoupons"
+		FROM
+			tb_product a
+		LEFT JOIN tb_coupons_product b ON a.id = b.product_id AND b.flag = 1
+		LEFT JOIN tb_coupons c ON b.coupons_id = c.id
+		<where>
+			a.flag = 1
+		</where>
+	</select>
+	<!-- 逻辑删除优惠券与商品的关系 -->
+	<update id="deleteProductAndCoupons" parameterType="com.water.pojo.TbProductTbCouponsVO">
+		UPDATE tb_coupons_product a
+		SET a.flag = 0
+		<where>
+			<if test="tbCoupons != null and tbCoupons.id != null and tbCoupons.id != ''">
+				a.coupons_id = #{tbCoupons.id}
+			</if>
+		</where>
+	</update>
+	<!-- 添加多个优惠券与商品的关系 -->
+	<insert id="addProductAndCoupons" parameterType="java.util.List">
+		INSERT INTO
+			tb_coupons_product (id,coupons_id,product_id,`level`,create_time,update_time,create_user,update_user,flag)
+		VALUES 
+		<foreach collection="list" item="item" separator=",">
+			(#{item.id},#{item.tbCoupons.id},#{item.tbProduct.id},#{item.level},#{item.createTime},#{item.updateTime},#{item.createUser},#{item.updateUser},#{item.flag})
+		</foreach>
+	
+	</insert>
+	<!-- 得到对应的商品和优惠券已经选中的 -->
+	<select id="getAllProductAndCoupons" parameterType="com.water.pojo.TbProductTbCouponsVO" resultType="com.water.pojo.TbProductTbCouponsVO">
+		SELECT
+			a.id AS "tbProduct.id",
+			a.pro_name AS "tbProduct.proName",
+			c.id AS "tbCoupons.id",
+			a.pro_price AS "tbProduct.proPrice",
+			a.pro_pic AS "tbProduct.proPic",
+			a.pro_desc AS "tbProduct.proDesc",
+			c.coupons_price AS "tbCoupons.couponsPrice"
+		FROM
+			tb_product a
+		LEFT JOIN tb_coupons_product b ON a.id = b.product_id
+		LEFT JOIN tb_coupons c ON b.coupons_id = c.id
+		<where>
+			a.flag = 1 AND b.flag = 1 AND c.flag = 1
+			<if test="tbCoupons != null and tbCoupons.id != null and tbCoupons.id != ''">
+				AND c.id = #{tbCoupons.id}
+			</if>
+		</where>
+	</select>
+</mapper>

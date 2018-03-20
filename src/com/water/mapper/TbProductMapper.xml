@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbProductMapper" >
+  <resultMap id="BaseResultMap" type="com.water.pojo.TbProduct" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="pro_name" property="proName" jdbcType="VARCHAR" />
+    <result column="kind_id" property="kindId" jdbcType="VARCHAR" />
+    <result column="pro_capacity" property="proCapacity" jdbcType="VARCHAR" />
+    <result column="pro_price" property="proPrice" jdbcType="INTEGER" />
+    <result column="pro_pic" property="proPic" jdbcType="VARCHAR" />
+    <result column="pro_desc" property="proDesc" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="baseSqlMap">
+  	id AS "id",
+  	pro_name AS "proName",
+  	kind_id AS "kindId",
+  	pro_capacity AS "proCapacity",
+  	pro_price AS "proPrice",
+  	pro_pic AS "proPic",
+  	pro_desc AS "proDesc",
+  	create_time AS "createTime",
+	update_time AS "updateTime",
+	create_user AS "createUser",
+	update_user AS "updateUser",
+	flag AS "flag"
+  </sql>
+  <select id="getAllTbProducts" parameterType="com.water.pojo.TbProduct" resultType="com.water.pojo.TbProduct">
+  	SELECT 
+  		<include refid="baseSqlMap"></include>
+  	FROM tb_product a
+  	<where>
+  		a.flag = 1
+  		<if test="kindId != null and kindId != ''">
+  			AND kind_id = #{kindId}
+  		</if>
+  	</where>
+  </select>
+  
+  <select id="getTbProduct" parameterType="com.water.pojo.TbProduct" resultType="com.water.pojo.TbProduct">
+  	SELECT 
+  		<include refid="baseSqlMap"></include>
+  	FROM tb_product a
+  	<where>
+  		a.flag = 1
+  		<if test="id != null and id != ''">
+  			AND a.id = #{id}
+  		</if>
+  	</where>
+  </select>
+  
+  <insert id="addTbProduct" parameterType="com.water.pojo.TbProduct">
+  	 INSERT INTO tb_product (id, pro_name, kind_id, 
+      pro_capacity, pro_price, pro_pic, 
+      pro_desc, create_time, update_time, 
+      create_user, update_user, flag
+      )
+    VALUES (#{id,jdbcType=VARCHAR}, #{proName,jdbcType=VARCHAR}, #{kindId,jdbcType=VARCHAR}, 
+      #{proCapacity,jdbcType=VARCHAR}, #{proPrice,jdbcType=INTEGER}, #{proPic,jdbcType=VARCHAR}, 
+      #{proDesc,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <update id="updateTbProduct" parameterType="com.water.pojo.TbProduct">
+	    UPDATE tb_product
+	    <set >
+	      <if test="proName != null" >
+	        pro_name = #{proName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="kindId != null" >
+	        kind_id = #{kindId,jdbcType=VARCHAR},
+	      </if>
+	      <if test="proCapacity != null" >
+	        pro_capacity = #{proCapacity,jdbcType=VARCHAR},
+	      </if>
+	      <if test="proPrice != null" >
+	        pro_price = #{proPrice,jdbcType=INTEGER},
+	      </if>
+	      <if test="proPic != null" >
+	        pro_pic = #{proPic,jdbcType=VARCHAR},
+	      </if>
+	      <if test="proDesc != null" >
+	        pro_desc = #{proDesc,jdbcType=VARCHAR},
+	      </if>
+	      <if test="createTime != null" >
+	        create_time = #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="updateTime != null" >
+	        update_time = #{updateTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="createUser != null" >
+	        create_user = #{createUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="updateUser != null" >
+	        update_user = #{updateUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="flag != null" >
+	        flag = #{flag,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    WHERE id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  
+</mapper>

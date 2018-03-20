@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbStorageMapper">
+
+  <sql id="baseSqlMap">
+  	a.id AS "id",
+  	a.storage_num AS "storageNum",
+  	a.pro_id AS "tbProduct.id",
+  	a.create_time AS "createTime",
+  	a.create_user AS "createUser",
+  	a.update_time AS "updateTime",
+  	a.update_user AS "updateUser",
+  	a.flag AS "flag"
+  </sql>
+  
+  
+  <!-- 得到相应的库存集合 -->
+  <select id="getAllTbStorage" parameterType="com.water.pojo.TbStorage" resultType="com.water.pojo.TbStorage">
+  	SELECT 
+  		<include refid="baseSqlMap"></include>,
+  		b.pro_name AS "tbProduct.proName"
+  	FROM tb_storage a
+  	LEFT JOIN tb_product b ON a.pro_id = b.id
+  	LEFT JOIN tb_kind c ON b.kind_id = c.id 
+  	<where>
+  		a.flag = 1
+  		AND b.flag = 1
+  		AND c.flag = 1
+  		<if test="tbProduct!=null and tbProduct.kindId!=null and tbProduct.kindId!=''">
+  			AND b.kindId = #{tbProduct.kindId}
+  		</if>
+  	</where>
+  </select>
+
+  <!-- 得到一个实体 -->
+  <select id="getTbStorage" parameterType="com.water.pojo.TbStorage" resultType="com.water.pojo.TbStorage">
+  	SELECT 
+  		<include refid="baseSqlMap"></include>,
+  		b.pro_name AS "tbProduct.proName"
+  	FROM tb_storage a
+  	LEFT JOIN tb_product b ON a.pro_id = b.id
+  	<where>
+  		a.flag = 1
+  		AND b.flag = 1
+  		<if test="id != null and id != ''">
+  			AND id = #{id}
+  		</if>
+  		<if test="tbProduct!=null and tbProduct.id!=null and tbProduct.id!=''">
+  			AND b.id = #{tbProduct.id}
+  		</if>
+  	</where>
+  </select>
+
+  <!-- 添加一个库存信息 -->
+  <insert id="addTbStorage">
+  	INSERT INTO tb_storage (id, storage_num, pro_id, 
+      create_time, update_time, create_user, 
+      update_user, flag)
+    VALUES (#{id,jdbcType=VARCHAR}, #{storageNum,jdbcType=INTEGER}, #{tbProduct.id,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+      #{updateUser,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR})
+  </insert>
+  <!-- 更新一个库存信息 -->
+  <update id="updateTbStorage">
+	   UPDATE tb_storage
+	    <set >
+	      <if test="storageNum != null" >
+	        storage_num = #{storageNum,jdbcType=INTEGER},
+	      </if>
+	      <if test="tbProduct != null and tbProduct.id != null and tbProduct.id != ''" >
+	        pro_id = #{tbProduct.id,jdbcType=VARCHAR},
+	      </if>
+	      <if test="createTime != null" >
+	        create_time = #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="updateTime != null" >
+	        update_time = #{updateTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="createUser != null" >
+	        create_user = #{createUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="updateUser != null" >
+	        update_user = #{updateUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="flag != null" >
+	        flag = #{flag,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+ </mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbCouponsUserMapper">
+	<insert id="addTbCouponsUsers" parameterType="java.util.List">
+		INSERT INTO tb_coupons_user (id,coupons_id,user_id,coupons_num,create_time,update_time,create_user,update_user,flag)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+		(#{item.id},#{item.tbCoupons.id},#{item.tbUser.id},#{item.couponsNum},#{item.createTime},#{item.updateTime},#{item.createUser},#{item.updateUser},#{item.flag})
+		</foreach>
+	</insert>
+	<select id="getAllTbCouponsUsers" parameterType="com.water.pojo.TbCouponsUserVO" resultType="com.water.pojo.TbCouponsUserVO">
+		SELECT
+			a.id AS "id",
+			a.coupons_num AS "couponsNum" 
+		FROM tb_coupons_user a
+		LEFT JOIN tb_coupons b ON a.coupons_id = b.id
+		LEFT JOIN tb_user c ON a.user_id = c.id
+		WHERE 
+		a.flag = 1
+		<if test="tbUser != null and tbUser.id != null and tbUser.id != ''">
+			AND a.user_id = #{tbUser.id}
+		</if>
+		<if test="tbCoupons != null and tbCoupons.id != null and tbCoupons.id != ''">
+		 	AND a.coupons_id = #{tbCoupons.id}
+		 </if>
+	</select>
+	
+	<insert id="addTbCouponsUser" parameterType="com.water.pojo.TbCouponsUserVO">
+		INSERT INTO tb_coupons_user (id,coupons_id,user_id,coupons_num,create_time,update_time,create_user,update_user,flag)
+		VALUES
+		(#{id},#{tbCoupons.id},#{tbUser.id},#{couponsNum},#{createTime},#{updateTime},#{createUser},#{updateUser},#{flag})
+	</insert>
+</mapper>

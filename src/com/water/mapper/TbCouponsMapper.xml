@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbCouponsMapper">
+
+	<sql id="baseSqlMap">
+		a.id AS "id",
+		a.coupons_name AS "couponsName",
+		a.over_num AS "overNum",
+		a.coupons_time_own AS "couponsTimeOwn",
+		a.coupons_begin_time AS "couponsBeginTime",
+		a.coupons_end_time AS "couponsEndTime",
+		a.use_end_time AS "useEndTime",
+		a.use_begin_time AS "useBeginTime",
+		a.coupons_desc AS "couponsDesc",
+		a.coupons_num AS "couponsNum",
+		a.coupons_price AS "couponsPrice",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.create_user AS "createUser",
+		a.update_user AS "updateUser",
+		a.flag AS "flag"
+	</sql>
+	<!-- 得到所有对应的优惠券 -->
+	<select id="getAllTbCoupons" parameterType="com.water.pojo.TbCoupons" resultType="com.water.pojo.TbCoupons">
+		SELECT
+			<include refid="baseSqlMap"></include>
+		FROM tb_coupons a
+		<where>
+			a.flag = 1
+			<if test="couponsBeginTime != null and couponsBeginTime != ''">
+				AND <![CDATA[ a.coupons_begin_time <= #{couponsBeginTime}]]>
+			</if>
+			<if test="couponsEndTime != null and couponsEndTime != ''">
+				 AND <![CDATA[ a.coupons_end_time >= #{couponsEndTime}]]>
+			</if>
+			<if test="couponsTimeOwn != null and couponsTimeOwn != ''">
+				AND a.coupons_time_own = #{couponsTimeOwn}
+			</if>
+		</where>
+	</select>
+	<!-- 得到单一的优惠券 -->
+	<select id="getTbCoupons" parameterType="com.water.pojo.TbCoupons" resultType="com.water.pojo.TbCoupons">
+		SELECT 
+		<include refid="baseSqlMap"></include>
+		FROM tb_coupons a
+		<where>
+			a.flag = 1
+			<if test="id != null and id != ''">
+				AND a.id = #{id}
+			</if>
+			<if test="couponsBeginTime != null and couponsBeginTime != ''">
+				AND <![CDATA[ a.coupons_begin_time <= #{couponsBeginTime}]]>
+			</if>
+			<if test="couponsEndTime != null and couponsEndTime != ''">
+				 AND <![CDATA[ a.coupons_end_time >= #{couponsEndTime}]]>
+			</if>
+			<if test="couponsTimeOwn != null and couponsTimeOwn != ''">
+				AND a.coupons_time_own = #{couponsTimeOwn}
+			</if>
+		</where>
+	</select>
+	<!-- 添加优惠券 -->
+	<insert id="insertTbCoupons" parameterType="com.water.pojo.TbCoupons">
+		INSERT INTO tb_coupons (id,coupons_name,over_num,coupons_time_own,coupons_begin_time,coupons_end_time,use_end_time,use_begin_time,coupons_desc,coupons_num,coupons_price,create_time,update_time,create_user,update_user,flag)
+		VALUES (#{id},#{couponsName},#{overNum},#{couponsTimeOwn},#{couponsBeginTime},#{couponsEndTime},#{useEndTime},#{useBeginTime},#{couponsDesc},#{couponsNum},#{couponsPrice},#{createTime},#{updateTime},#{createUser},#{updateUser},#{flag})
+	</insert>
+	<!-- 更新 -->
+	<update id="updateTbCoupons" parameterType="com.water.pojo.TbCoupons">
+		UPDATE tb_coupons
+	    <set >
+	      <if test="couponsName != null" >
+	        coupons_name = #{couponsName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="overNum != null" >
+	        over_num = #{overNum,jdbcType=INTEGER},
+	      </if>
+	      <if test="couponsTimeOwn != null" >
+	        coupons_time_own = #{couponsTimeOwn,jdbcType=VARCHAR},
+	      </if>
+	      <if test="couponsBeginTime != null" >
+	        coupons_begin_time = #{couponsBeginTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="couponsEndTime != null" >
+	        coupons_end_time = #{couponsEndTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="useEndTime != null" >
+	        use_end_time = #{useEndTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="useBeginTime != null" >
+	        use_begin_time = #{useBeginTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="couponsDesc != null" >
+	        coupons_desc = #{couponsDesc,jdbcType=VARCHAR},
+	      </if>
+	      <if test="couponsNum != null" >
+	        coupons_num = #{couponsNum,jdbcType=INTEGER},
+	      </if>
+	      <if test="couponsPrice != null" >
+	        coupons_price = #{couponsPrice,jdbcType=INTEGER},
+	      </if>
+	      <if test="createTime != null" >
+	        create_time = #{createTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="updateTime != null" >
+	        update_time = #{updateTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="createUser != null" >
+	        create_user = #{createUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="updateUser != null" >
+	        update_user = #{updateUser,jdbcType=VARCHAR},
+	      </if>
+	      <if test="flag != null" >
+	        flag = #{flag,jdbcType=VARCHAR},
+	      </if>
+	    </set>
+	    where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<!-- 删除一个优惠券 -->
+	<update id="deleteCoupons" parameterType="com.water.pojo.TbCoupons">
+		UPDATE tb_coupons
+		<set>
+			<if test="flag != null" >
+	        	flag = #{flag,jdbcType=VARCHAR},
+	      	</if>
+		</set>
+		<where>
+			id = #{id,jdbcType=VARCHAR}
+		</where>
+	</update>
+	
+</mapper>

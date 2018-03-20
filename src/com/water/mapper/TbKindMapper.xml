@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.mapper.TbKindMapper">
+	<resultMap id="BaseResultMap" type="com.water.pojo.TbKind">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="kind_name" property="kindName" jdbcType="VARCHAR" />
+		<result column="kind_desc" property="kindDesc" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="create_user" property="createUser" jdbcType="VARCHAR" />
+		<result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+		<result column="flag" property="flag" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="baseSqlMap">
+		id AS "id",
+		kind_name AS "kindName",
+		kind_desc AS "kindDesc",
+		create_time AS "createTime",
+		update_time AS "updateTime",
+		create_user AS "createUser",
+		update_user AS "updateUser",
+		flag AS "flag"
+	</sql>
+	
+	<sql id="baseSqlJoin">
+	
+	</sql>
+	
+	<select id="getAllTbKind" parameterType="com.water.pojo.TbKind" resultType="com.water.pojo.TbKind">
+		SELECT
+		<include refid="baseSqlMap"></include>
+		FROM tb_kind a
+		<where>
+			a.flag = 1
+		</where>
+	</select>
+	
+	<select id="getTbKind" parameterType="com.water.pojo.TbKind" resultType="com.water.pojo.TbKind">
+		SELECT
+		<include refid="baseSqlMap"></include>
+		FROM tb_kind a
+		<where>
+			a.flag = 1 
+			<if test="id!=null and id!=''">
+				AND a.id = #{id}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertTbKind" parameterType="com.water.pojo.TbKind" >
+		INSERT INTO tb_kind (id, kind_name, kind_desc, create_time, update_time, create_user, update_user, flag)
+		VALUES (#{id,jdbcType=VARCHAR}, #{kindName,jdbcType=VARCHAR}, #{kindDesc,jdbcType=VARCHAR}, 
+			#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
+			#{updateUser,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="updateTbKind" parameterType="com.water.pojo.TbKind" >
+	
+		UPDATE tb_kind
+		<set>
+			<if test="kindName != null">
+				kind_name = #{kindName,jdbcType=VARCHAR},
+			</if>
+			<if test="kindDesc != null">
+				kind_desc = #{kindDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null" >
+	        	create_time = #{createTime,jdbcType=TIMESTAMP},
+	      	</if>
+	      	<if test="updateTime != null" >
+	        	update_time = #{updateTime,jdbcType=TIMESTAMP},
+	      	</if>
+	      	<if test="createUser != null" >
+	        	create_user = #{createUser,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="updateUser != null" >
+	        	update_user = #{updateUser,jdbcType=VARCHAR},
+	      	</if>
+	      	<if test="flag != null" >
+	        	flag = #{flag,jdbcType=VARCHAR},
+	      	</if>
+		</set>
+		WHERE id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>
